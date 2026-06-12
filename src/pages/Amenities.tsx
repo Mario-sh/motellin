@@ -1,13 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Play, BedDouble, Maximize, Users } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '../context/BookingContext';
 import { Link } from 'react-router-dom';
 
-const AMENITIES_TABS = [
-  "Restaurant & Bar", "Spa & Bien-être", "Yoga & Fitness", 
-  "Terrasse Estivale", "Jeux Enfants", "Piscine", 
-  "Événements"
+const AMENITIES_DATA = [
+  {
+    id: "Restaurant & Bar",
+    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Décor élégant et vaste choix de boissons",
+        desc: "Plongez dans l'atmosphère sophistiquée de notre décor épuré, tout en savourant une sélection de boissons préparées avec soin. Ambiance relaxante et soins apaisants pour votre confort optimal."
+      },
+      {
+        title: "Sièges en plein air et musique live",
+        desc: "Profitez de la douceur de nos espaces extérieurs. Dînez sous les étoiles tout en écoutant des divertissements musicaux live en parfaite harmonie avec le lieu."
+      }
+    ]
+  },
+  {
+    id: "Spa & Bien-être",
+    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Soins relaxants et massages exclusifs",
+        desc: "Laissez-vous tenter par nos massages thérapeutiques et soins du visage. Un vrai cocon pour éveiller vos sens et relaxer votre corps entier."
+      },
+      {
+        title: "Sauna, Hammam & Aromathérapie",
+        desc: "Purifiez votre peau et votre esprit grâce à nos installations thermales haut de gamme aux huiles essentielles sélectionnées."
+      }
+    ]
+  },
+  {
+    id: "Yoga & Fitness",
+    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Studio de Yoga panoramique",
+        desc: "Pratiquez le yoga face à des baies vitrées offrant une vue imprenable sur la nature sous les conseils de nos instructeurs certifiés."
+      },
+      {
+        title: "Salle de sport équipée dernier cri",
+        desc: "Maintenez votre routine avec nos équipements de cardio et musculation modernes, ouverts 24h/24 pour votre flexibilité."
+      }
+    ]
+  },
+  {
+    id: "Terrasse Estivale",
+    image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Lounge à ciel ouvert",
+        desc: "Baignez de soleil avec nos chaises longues confortables et un service impeccable pour vous rafraîchir en permanence."
+      },
+      {
+        title: "Dégustation de tapas & cocktails",
+        desc: "L'endroit idéal pour apprécier nos spécialités légères et cocktails rafraîchissants lors des douces soirées d'été."
+      }
+    ]
+  },
+  {
+    id: "Jeux Enfants",
+    image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Espace d'éveil sécurisé",
+        desc: "Des zones de jeux colorées, pensées et sécurisées spécifiquement pour le divertissement et l'éveil de vos enfants."
+      },
+      {
+        title: "Activités encadrées par des professionnels",
+        desc: "Laissez vos enfants s'amuser grâce à nos animateurs qui proposent chaque jour de nouvelles activités ludiques et éducatives."
+      }
+    ]
+  },
+  {
+    id: "Piscine",
+    image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Piscine chauffée intérieure et extérieure",
+        desc: "Nagez toute l'année dans nos bassins à température idéale, conçus pour la détente ou les longueurs sportives."
+      },
+      {
+        title: "Jacuzzi & jets massants",
+        desc: "Détendez vos muscles dans notre grand bain à remous équipé de jets ciblés, parfait après une longue journée."
+      }
+    ]
+  },
+  {
+    id: "Événements",
+    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1000",
+    features: [
+      {
+        title: "Salles de conférence modulables",
+        desc: "Des espaces équipés des dernières technologies audiovisuelles, pouvant accueillir vos réunions et grands événements."
+      },
+      {
+        title: "Service traiteur sur mesure",
+        desc: "Un accompagnement culinaire de prestige pour vos mariages, banquets et séminaires professionnels."
+      }
+    ]
+  }
 ];
 
 const ROOMS = [
@@ -60,6 +155,9 @@ const Hero = () => {
 };
 
 const AmenitiesSection = () => {
+  const [activeTab, setActiveTab] = useState(AMENITIES_DATA[0].id);
+  const currentAmenity = AMENITIES_DATA.find(a => a.id === activeTab) || AMENITIES_DATA[0];
+
   return (
     <section className="py-20 md:py-32 px-6 max-w-7xl mx-auto bg-brand-light overflow-hidden">
       <motion.div 
@@ -72,10 +170,6 @@ const AmenitiesSection = () => {
         <h2 className="text-5xl md:text-7xl font-serif max-w-2xl leading-tight text-brand-dark tracking-tight">
           Nous offrons<br />le meilleur pour vous
         </h2>
-        <button className="w-32 h-32 shrink-0 bg-brand-dark rounded-full flex flex-col items-center justify-center text-white group hover:scale-105 transition-transform duration-300 shadow-xl">
-          <Play className="w-6 h-6 mb-2 fill-white group-hover:text-brand-cream" />
-          <span className="text-xs uppercase tracking-widest text-brand-cream text-center">Visite vidéo</span>
-        </button>
       </motion.div>
 
       <motion.div 
@@ -85,59 +179,59 @@ const AmenitiesSection = () => {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="flex flex-wrap gap-3 mb-16 justify-center"
       >
-        {AMENITIES_TABS.map((tab, idx) => (
+        {AMENITIES_DATA.map((tab) => (
           <button 
-            key={tab}
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
             className={`px-6 py-3 rounded-full text-sm md:text-base border transition-all ${
-              idx === 0 
+              activeTab === tab.id 
                 ? 'bg-brand-dark text-white border-brand-dark' 
                 : 'border-brand-muted/30 text-brand-dark hover:border-brand-dark'
             }`}
           >
-            {tab}
+            {tab.id}
           </button>
         ))}
       </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-center">
-        <motion.div 
-          initial={{ x: -40, opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="w-full lg:w-1/2 rounded-[2rem] overflow-hidden shadow-2xl bg-brand-dark/5"
-        >
-          <img 
-            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=1000" 
-            alt="Restaurant & Bar" 
-            loading="lazy"
-            className="w-full h-[400px] md:h-[500px] object-cover hover:scale-105 transition-transform duration-700"
-          />
-        </motion.div>
+        <div className="w-full lg:w-1/2 rounded-[2rem] overflow-hidden shadow-2xl bg-brand-dark/5 relative h-[400px] md:h-[500px]">
+          <AnimatePresence mode="wait">
+            <motion.img 
+              key={currentAmenity.image}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              src={currentAmenity.image}
+              alt={currentAmenity.id} 
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
+        </div>
+
         <div className="w-full lg:w-1/2 flex flex-col gap-12">
-          <motion.div
-            initial={{ x: 40, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <h3 className="text-2xl md:text-3xl font-serif mb-4 text-brand-dark">Décor élégant et vaste choix de boissons</h3>
-            <p className="text-brand-muted leading-relaxed font-sans">
-              Plongez dans l'atmosphère sophistiquée de notre décor épuré, tout en savourant une sélection de boissons préparées avec soin. Ambiance relaxante et soins apaisants pour votre confort optimal.
-            </p>
-          </motion.div>
-          <div className="h-px bg-brand-muted/20 w-full" />
-          <motion.div
-            initial={{ x: 40, opacity: 0 }}
-            whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <h3 className="text-2xl md:text-3xl font-serif mb-4 text-brand-dark">Sièges en plein air et musique live</h3>
-            <p className="text-brand-muted leading-relaxed font-sans">
-              Profitez de la douceur de nos espaces extérieurs. Dînez sous les étoiles tout en écoutant des divertissements musicaux live en parfaite harmonie avec le lieu.
-            </p>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentAmenity.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col gap-12 w-full"
+            >
+              {currentAmenity.features.map((feature, idx) => (
+                <div key={idx}>
+                  <h3 className="text-2xl md:text-3xl font-serif mb-4 text-brand-dark">{feature.title}</h3>
+                  <p className="text-brand-muted leading-relaxed font-sans">
+                    {feature.desc}
+                  </p>
+                  {idx === 0 && <div className="h-px bg-brand-muted/20 w-full mt-12" />}
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>
@@ -288,7 +382,7 @@ const NewsletterSection = () => {
           transition={{ duration: 0.8 }}
           className="relative w-full h-[400px] md:h-[450px] rounded-[100px] md:rounded-[200px] overflow-hidden flex flex-col items-center justify-center text-center px-4 shadow-2xl border border-white/10"
         >
-          <img src="https://images.unsplash.com/photo-1538332576228-eb5b4c4de8f5?auto=format&fit=crop&q=80&w=1600" alt="Tropical Pool" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80&w=1600" alt="Tropical Pool" className="absolute inset-0 w-full h-full object-cover opacity-60" />
           <div className="absolute inset-0 bg-brand-dark/40" />
           
           <div className="relative z-10 max-w-2xl mx-auto w-full">
