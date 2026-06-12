@@ -1,0 +1,6 @@
+{
+  "name": "Motelin",
+  "description": "A luxurious hotel and resort amenities landing page.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
